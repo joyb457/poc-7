@@ -2,25 +2,24 @@ pipeline {
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Build Docker') {
+        stage('Build Docker Image') {
             steps {
                 sh 'docker build -t poc7-app .'
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy Using Ansible') {
             steps {
-                sh '''
-                docker rm -f poc7-app || true
-                docker run -d -p 5000:5000 --name poc7-app poc7-app
-                '''
+                sh 'ansible-playbook /home/ec2-user/ansible/deploy.yml'
             }
         }
+
     }
 }
